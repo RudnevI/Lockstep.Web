@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LockStep.Library.Domain;
 
-namespace LockStepNew
+namespace Lockstep.Web.Interfaces
 {
     public interface IProductRepository : IGenericRepository<Product>
     {

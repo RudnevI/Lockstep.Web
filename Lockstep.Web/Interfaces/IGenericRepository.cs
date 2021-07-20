@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LockStepNew
+namespace Lockstep.Web.Interfaces
 {
     public interface IGenericRepository<T>
     {

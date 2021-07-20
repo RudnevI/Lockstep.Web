@@ -1,4 +1,6 @@
 using Lockstep.Web.Data;
+using Lockstep.Web.Interfaces;
+using Lockstep.Web.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -32,12 +34,28 @@ namespace Lockstep.Web
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
+
+
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
+            services.AddScoped<IBookCommentRepository, BookCommentRepository>();
+            services.AddScoped<IBookVoteRepository, BookVoteRepository>();
+            services.AddScoped<IBookGenreRepository, BookGenreRepository>();
+            services.AddScoped<ICheckRepository, CheckRepository>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<IPriceRepository, PriceRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+
             /*services.AddTransient<Interface, Implementation> - Dependency Injection*/
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
         }
+
+      
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

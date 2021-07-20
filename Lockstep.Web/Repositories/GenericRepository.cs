@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace LockStepNew
+namespace Lockstep.Web.Repositories
 {
     public class GenericRepository<T> where T : class
     {
