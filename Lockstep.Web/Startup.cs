@@ -1,3 +1,4 @@
+using Lockstep.Web.Config;
 using Lockstep.Web.Data;
 using Lockstep.Web.Interfaces;
 using Lockstep.Web.Repositories;
@@ -33,8 +34,8 @@ namespace Lockstep.Web
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-
-
+            services.AddHttpClient();
+            services.Configure<SiteConfig>(Configuration.GetSection("SiteConfig"));
 
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IBookRepository, BookRepository>();
