@@ -19,17 +19,17 @@ namespace Lockstep.Web.CQRS.Commands.AuthorCommands
     public class DeleteContentCommandHandler : IRequestHandler<DeleteAuthorCommand, Unit>
     {
         private readonly IAuthorRepository _repo;
-        private readonly IMediator _mediator;
 
-        public DeleteContentCommandHandler(IAuthorRepository repo, IMediator mediator)
+
+        public DeleteContentCommandHandler(IAuthorRepository repo)
         {
             _repo = repo;
-            _mediator = mediator;
+         
         }
 
         public async Task<Unit> Handle(DeleteAuthorCommand command, CancellationToken cancellationToken)
         {
-            await _repo.Delete(_mediator.Send(new GetAuthorByIdQuery { Id = command.Id }));
+            await _repo.Delete(command.Id);
             return Unit.Value;
         }
     }

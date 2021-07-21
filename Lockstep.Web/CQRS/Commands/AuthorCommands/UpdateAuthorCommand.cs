@@ -27,7 +27,7 @@ namespace Lockstep.Web.CQRS.Commands.AuthorCommands
 
         public async Task<Unit> Handle(CreateAuthorCommand command, CancellationToken cancellationToken)
         {
-            await _repo.Update(new Author { Name = command.Name });
+            await _repo.Update(new Author { Name = command.Name});
             return Unit.Value;
         }
     }

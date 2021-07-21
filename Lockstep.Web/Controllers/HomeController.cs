@@ -1,5 +1,6 @@
 ﻿using Lockstep.Web.Config;
 using Lockstep.Web.Models;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -19,12 +20,14 @@ namespace Lockstep.Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IHttpClientFactory httpClientFactory;
         private readonly SiteConfig _siteConfig;
+        private readonly IMediator _mediator;
 
-        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, IOptions<SiteConfig>options, IConfiguration config)
+        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, IOptions<SiteConfig>options, IConfiguration config, IMediator mediator)
         {
             _logger = logger;
             this.httpClientFactory = httpClientFactory;
             _siteConfig = options.Value;
+            _mediator = mediator;
         }
 
         public IActionResult Index()
@@ -36,6 +39,8 @@ namespace Lockstep.Web.Controllers
         {
             return View();
         }
+
+
 
         private async Task<string> GetAsync(string url, Dictionary<string, string> @params, CancellationToken cancellationToken)
         {
