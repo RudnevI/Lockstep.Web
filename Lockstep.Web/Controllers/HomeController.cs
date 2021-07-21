@@ -1,10 +1,15 @@
-﻿using Lockstep.Web.Models;
+﻿using Lockstep.Web.Config;
+using Lockstep.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Lockstep.Web.Controllers
@@ -12,10 +17,14 @@ namespace Lockstep.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IHttpClientFactory httpClientFactory;
+        private readonly SiteConfig _siteConfig;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, IOptions<SiteConfig>options, IConfiguration config)
         {
             _logger = logger;
+            this.httpClientFactory = httpClientFactory;
+            _siteConfig = options.Value;
         }
 
         public IActionResult Index()
@@ -28,6 +37,23 @@ namespace Lockstep.Web.Controllers
             return View();
         }
 
+        private async Task<string> GetAsync(string url, Dictionary<string, string> @params, CancellationToken cancellationToken)
+        {
+            var client = httpClientFactory.CreateClient();
+            client.Timeout = TimeSpan.FromMinutes(1);
+            client.BaseAddress = new Uri(url);
+            var httpsResponse = await client.GetAsync(url, cancellationToken);
+            if (httpsResponse.IsSuccessStatusCode)
+            {
+                var content = await httpsResponse.Content.ReadAsStringAsync();
+                return content;
+            }
+            else
+            {
+                return string.Empty;
+            }
+
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

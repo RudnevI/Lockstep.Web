@@ -2,6 +2,7 @@ using Lockstep.Web.Config;
 using Lockstep.Web.Data;
 using Lockstep.Web.Interfaces;
 using Lockstep.Web.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Lockstep.Web
@@ -36,6 +38,8 @@ namespace Lockstep.Web
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddHttpClient();
             services.Configure<SiteConfig>(Configuration.GetSection("SiteConfig"));
+
+            services.AddMediatR(Assembly.GetExecutingAssembly());
 
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IBookRepository, BookRepository>();
