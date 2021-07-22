@@ -11,7 +11,7 @@ namespace Lockstep.Web.CQRS.Queries.GenreQueries
 {
     public class GetGenreByIdQuery : IRequest<Genre>
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
     }
 
     public class GetGenreByIdQueryHandler : IRequestHandler<GetGenreByIdQuery, Genre>

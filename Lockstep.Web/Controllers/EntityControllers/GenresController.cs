@@ -8,16 +8,21 @@ using Microsoft.EntityFrameworkCore;
 using LockStep.Library.Domain;
 using Lockstep.Web.Data;
 using Lockstep.Web.Interfaces;
+using MediatR;
+using Lockstep.Web.CQRS.Queries.GenreQueries;
+using Lockstep.Web.CQRS.Commands.GenreCommands;
 
 namespace Lockstep.Web.Controllers.EntityControllers
 {
     public class GenresController : Controller
     {
-        private readonly IGenreRepository _repo;
+       
+        private readonly IMediator _mediator;
+        
 
-        public GenresController(IGenreRepository repo)
+        public GenresController(IMediator mediator)
         {
-            _repo = repo;
+            _mediator = mediator;
         }
 
 
@@ -26,7 +31,7 @@ namespace Lockstep.Web.Controllers.EntityControllers
         // GET: Genres
         public async Task<IActionResult> Index()
         {
-            return View(await _repo.Get());
+            return View(await _mediator.Send(new GetAllGenresQuery()));
         }
 
         // GET: Genres/Details/5
@@ -37,8 +42,7 @@ namespace Lockstep.Web.Controllers.EntityControllers
                 return NotFound();
             }
 
-            var genre = await _repo
-                .GetById(id);
+            var genre = await _mediator.Send(new GetGenreByIdQuery { Id = id});
             if (genre == null)
             {
                 return NotFound();
@@ -62,7 +66,7 @@ namespace Lockstep.Web.Controllers.EntityControllers
         {
             if (ModelState.IsValid)
             {
-                await _repo.Insert(genre);
+                await _mediator.Send(new CreateGenreCommand { Name = genre.Name });
                 return RedirectToAction(nameof(Index));
             }
             return View(genre);
@@ -76,7 +80,7 @@ namespace Lockstep.Web.Controllers.EntityControllers
                 return NotFound();
             }
 
-            var genre = await _repo.GetById(id);
+            var genre = await _mediator.Send(new GetGenreByIdQuery { Id = id });
             if (genre == null)
             {
                 return NotFound();
@@ -100,7 +104,7 @@ namespace Lockstep.Web.Controllers.EntityControllers
             {
                 try
                 {
-                    await _repo.Update(genre);
+                    await _mediator.Send(new UpdateGenreCommand { Name = genre.Name });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -126,8 +130,7 @@ namespace Lockstep.Web.Controllers.EntityControllers
                 return NotFound();
             }
 
-            var genre = await _repo
-                .GetById(id);
+            var genre = await _mediator.Send(new GetGenreByIdQuery { Id = id });
             if (genre == null)
             {
                 return NotFound();
@@ -141,14 +144,14 @@ namespace Lockstep.Web.Controllers.EntityControllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var genre = await _repo.GetById(id);
-            await _repo.Delete(genre);
+            
+            await _mediator.Send(new DeleteGenreCommand { Id = id });
             return RedirectToAction(nameof(Index));
         }
 
         private bool GenreExists(int id)
         {
-            return _repo.GetById(id) != null;
+            return _mediator.Send(new GetGenreByIdQuery { Id=id}) != null;
         }
     }
 }
