@@ -1,7 +1,9 @@
 ﻿using Lockstep.Web.Config;
+using Lockstep.Web.Hubs;
 using Lockstep.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -21,22 +23,35 @@ namespace Lockstep.Web.Controllers
         private readonly IHttpClientFactory httpClientFactory;
         private readonly SiteConfig _siteConfig;
         private readonly IMediator _mediator;
+        private readonly IHubContext<ChatHub> _hub;
+        private readonly IHubContext<NotificationsHub> _hubNotify;
 
-        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, IOptions<SiteConfig>options, IConfiguration config, IMediator mediator)
+        public HomeController(ILogger<HomeController> logger,
+            IHttpClientFactory httpClientFactory,
+            IOptions<SiteConfig> options, IConfiguration config,
+            IMediator mediator,
+            IHubContext<ChatHub> hub,
+            IHubContext<NotificationsHub> hubNotify
+            )
         {
             _logger = logger;
             this.httpClientFactory = httpClientFactory;
             _siteConfig = options.Value;
             _mediator = mediator;
+            _hub = hub;
+            _hubNotify = hubNotify;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+             await _hub.Clients.All.SendAsync("ReceiveMessage", "site", "hello");
+            await _hubNotify.Clients.All.SendAsync("Send", "Notification");
             return View();
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Privacy()
         {
+            await _hub.Clients.All.SendAsync("ReceiveMessage", "site", "hello");
             return View();
         }
 

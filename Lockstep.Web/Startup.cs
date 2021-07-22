@@ -1,5 +1,6 @@
 using Lockstep.Web.Config;
 using Lockstep.Web.Data;
+using Lockstep.Web.Hubs;
 using Lockstep.Web.Interfaces;
 using Lockstep.Web.Repositories;
 using MediatR;
@@ -41,23 +42,24 @@ namespace Lockstep.Web
 
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
-            services.AddScoped<IAuthorRepository, AuthorRepository>();
-            services.AddScoped<IBookRepository, BookRepository>();
-            services.AddScoped<IGenreRepository, GenreRepository>();
-            services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
-            services.AddScoped<IBookCommentRepository, BookCommentRepository>();
-            services.AddScoped<IBookVoteRepository, BookVoteRepository>();
-            services.AddScoped<IBookGenreRepository, BookGenreRepository>();
-            services.AddScoped<ICheckRepository, CheckRepository>();
-            services.AddScoped<IPaymentRepository, PaymentRepository>();
-            services.AddScoped<IPriceRepository, PriceRepository>();
-            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddTransient<IAuthorRepository, AuthorRepository>();
+            services.AddTransient<IBookRepository, BookRepository>();
+            services.AddTransient<IGenreRepository, GenreRepository>();
+            services.AddTransient<IBookAuthorRepository, BookAuthorRepository>();
+            services.AddTransient<IBookCommentRepository, BookCommentRepository>();
+            services.AddTransient<IBookVoteRepository, BookVoteRepository>();
+            services.AddTransient<IBookGenreRepository, BookGenreRepository>();
+            services.AddTransient<ICheckRepository, CheckRepository>();
+            services.AddTransient<IPaymentRepository, PaymentRepository>();
+            services.AddTransient<IPriceRepository, PriceRepository>();
+            services.AddTransient<IProductRepository, ProductRepository>();
 
             /*services.AddTransient<Interface, Implementation> - Dependency Injection*/
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
+            services.AddSignalR();
         }
 
       
@@ -90,6 +92,8 @@ namespace Lockstep.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<ChatHub>("/chat");
+                endpoints.MapHub<NotificationsHub>("/notify");
             });
         }
     }
