@@ -11,7 +11,7 @@ namespace Lockstep.Web.CQRS.Queries.BookQueries
 {
     public class GetBookByIdQuery : IRequest<Book>
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
     }
 
     public class GetBookByIdQueryHandler : IRequestHandler<GetBookByIdQuery, Book>

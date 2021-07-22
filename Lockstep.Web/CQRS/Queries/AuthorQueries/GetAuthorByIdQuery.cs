@@ -11,7 +11,7 @@ namespace Lockstep.Web.CQRS.Queries.AuthorQueries
 {
     public class GetAuthorByIdQuery : IRequest<Author> 
     { 
-        public int Id { get; set; }
+        public int? Id { get; set; }
     }
 
     public class GetAuthorByIdQueryHandler : IRequestHandler<GetAuthorByIdQuery, Author>
